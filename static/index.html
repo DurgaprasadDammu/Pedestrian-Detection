@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedestrian Detection Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-icon">🚶‍♂️</div>
+                <h1>Pedestrian<span>AI</span></h1>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="nav-btn active" data-target="dashboard">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+                    Dashboard
+                </button>
+                <button class="nav-btn" data-target="detection">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    Image Detection
+                </button>
+                <button class="nav-btn" data-target="comparison">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                    Performance Comparison
+                </button>
+                <button class="nav-btn" data-target="history">
+                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20v-6M6 20V10M18 20V4"></path></svg>
+                    Training History
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <p>Status: <span class="status-indicator online"></span> Ready</p>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- HEADER -->
+            <header class="content-header">
+                <div class="header-title">
+                    <h2 id="view-title">Dashboard Overview</h2>
+                    <p id="view-subtitle">Summary of pedestrian detection models and performance.</p>
+                </div>
+            </header>
+
+            <!-- VIEW: DASHBOARD -->
+            <section id="dashboard-view" class="view-panel active">
+                <div class="dashboard-grid">
+                    <!-- Stat Card 1 -->
+                    <div class="stat-card glass-panel animate-fade-in">
+                        <div class="card-icon blue-gradient">🎯</div>
+                        <div class="card-info">
+                            <h3>Best Accuracy</h3>
+                            <div class="stat-value">100.0%</div>
+                            <p class="stat-desc">Extension YOLOv6 model</p>
+                        </div>
+                    </div>
+                    <!-- Stat Card 2 -->
+                    <div class="stat-card glass-panel animate-fade-in" style="animation-delay: 0.1s;">
+                        <div class="card-icon purple-gradient">🧠</div>
+                        <div class="card-info">
+                            <h3>Proposed YOLOv5 + CA</h3>
+                            <div class="stat-value">94.5%</div>
+                            <p class="stat-desc">Accuracy with Coordinated Attention</p>
+                        </div>
+                    </div>
+                    <!-- Stat Card 3 -->
+                    <div class="stat-card glass-panel animate-fade-in" style="animation-delay: 0.2s;">
+                        <div class="card-icon green-gradient">⚡</div>
+                        <div class="card-info">
+                            <h3>Total Images</h3>
+                            <div class="stat-value">2,199</div>
+                            <p class="stat-desc">CVC-09 Pedestrian dataset</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-details">
+                    <div class="glass-panel detail-card">
+                        <h3>Model Comparison Overview</h3>
+                        <div class="table-container">
+                            <table class="metrics-table">
+                                <thead>
+                                    <tr>
+                                        <th>Model / Algorithm</th>
+                                        <th>Accuracy</th>
+                                        <th>Precision</th>
+                                        <th>Recall</th>
+                                        <th>F1 Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dashboard-table-body">
+                                    <!-- Dynamic content -->
+                                    <tr>
+                                        <td colspan="5" class="loading-cell">Loading metrics...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: IMAGE DETECTION -->
+            <section id="detection-view" class="view-panel">
+                <div class="detection-grid">
+                    <!-- Left: Upload & Input -->
+                    <div class="glass-panel input-card">
+                        <h3>Select or Upload Image</h3>
+                        <p class="section-desc">Upload a new image or choose one of the sample dataset frames.</p>
+                        
+                        <!-- Sample Selection -->
+                        <div class="samples-section">
+                            <h4>Dataset Sample Frames</h4>
+                            <div class="samples-carousel" id="samples-container">
+                                <!-- Dynamic list of sample images -->
+                            </div>
+                        </div>
+
+                        <!-- Drag and Drop Zone -->
+                        <div class="upload-zone" id="drop-zone">
+                            <input type="file" id="file-input" accept="image/*" class="file-hidden">
+                            <div class="upload-icon">📤</div>
+                            <p class="upload-prompt">Drag & drop your image here, or <span>browse</span></p>
+                            <p class="upload-limits">Supports PNG, JPG, JPEG</p>
+                        </div>
+                    </div>
+
+                    <!-- Right: Results -->
+                    <div class="glass-panel results-card">
+                        <h3>Inference Results</h3>
+                        <div class="inference-stats" id="inference-summary" style="display: none;">
+                            <div class="badge count-badge">Pedestrians Detected: <span id="ped-count">0</span></div>
+                            <div class="badge status-badge" id="ped-status">No Pedestrians</div>
+                        </div>
+
+                        <div class="image-comparison">
+                            <!-- Input Preview -->
+                            <div class="image-box" id="preview-box">
+                                <span class="box-label">Original Image</span>
+                                <div class="img-placeholder" id="placeholder-orig">
+                                    <div class="placeholder-icon">🖼️</div>
+                                    <p>Select or upload an image to start detection</p>
+                                </div>
+                                <img id="img-orig" class="display-image" style="display: none;">
+                            </div>
+                            
+                            <!-- Annotated Result -->
+                            <div class="image-box" id="result-box">
+                                <span class="box-label highlight">YOLOv5 + Attention Prediction</span>
+                                <div class="img-placeholder" id="placeholder-result">
+                                    <div class="placeholder-icon">🔍</div>
+                                    <p>Annotated output will be rendered here</p>
+                                </div>
+                                <img id="img-result" class="display-image" style="display: none;">
+                                <div class="loader" id="loader" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: PERFORMANCE COMPARISON -->
+            <section id="comparison-view" class="view-panel">
+                <div class="comparison-grid">
+                    <div class="glass-panel chart-card full-width">
+                        <h3>Metrics Comparison (Bar Chart)</h3>
+                        <div class="chart-container">
+                            <canvas id="metricsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VIEW: TRAINING HISTORY -->
+            <section id="history-view" class="view-panel">
+                <div class="history-grid">
+                    <div class="glass-panel chart-card">
+                        <h3>All Algorithms Training Accuracy Graph</h3>
+                        <div class="chart-container">
+                            <canvas id="accuracyChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="glass-panel chart-card">
+                        <h3>All Algorithms Training Loss Graph</h3>
+                        <div class="chart-container">
+                            <canvas id="lossChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
