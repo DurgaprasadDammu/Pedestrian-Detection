@@ -16,7 +16,7 @@ from keras.applications import ResNet50
 from keras.models import Sequential, Model, load_model
 from keras.layers import Conv2D, MaxPooling2D
 from keras.layers import Lambda, Activation, Flatten, Input
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from keras.preprocessing.image import ImageDataGenerator
 from keras.optimizers import Adam, RMSprop, SGD
 from sklearn.metrics import precision_score
 from sklearn.metrics import recall_score
