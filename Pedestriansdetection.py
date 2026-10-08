@@ -31,7 +31,7 @@ from numpy.linalg import norm
 
 
 #function to normalize bounding boxes
-def convert_bb(img, width, height, xmin, ymin, xmax, ymax):
+def convert_bb( width, height, xmin, ymin, xmax, ymax):
     bb = []
     conv_x = (64. / width)
     conv_y = (64. / height)
