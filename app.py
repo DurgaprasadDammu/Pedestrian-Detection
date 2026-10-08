@@ -204,13 +204,12 @@ async def predict_image(file: UploadFile = File(...)):
         hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
         
         # Detect people in the image
-        (rects, weights) = hog.detectMultiScale(img, winStride=(4, 4), padding=(8, 8), scale=1.05)
+        (rects, weights) = hog.detectMultiScale(img,hitThreshold=0.5, winStride=(4, 4), padding=(8, 8), scale=1.05)
         
-        for (x, y, w, h) in rects:
-            orig_x1 = max(0, min(orig_w - 1, int(x)))
-            orig_y1 = max(0, min(orig_h - 1, int(y)))
-            orig_x2 = max(0, min(orig_w - 1, int(x + w)))
-            orig_y2 = max(0, min(orig_h - 1, int(y + h)))
+        for (x, y, w, h),confidence in zip(rects, weights):
+            if confidence < 0.5:
+                continue
+            
             
             # Draw bounding box
             cv2.rectangle(annotated_img, (orig_x1, orig_y1), (orig_x2, orig_y2), (0, 0, 255), 2)
@@ -218,8 +217,7 @@ async def predict_image(file: UploadFile = File(...)):
                 annotated_img, 
                 "Pedestrian", 
                 (orig_x1, max(15, orig_y1 - 5)), 
-                cv2.FONT_HERSHEY_SIMPLEX, 
-                0.5, 
+                cv2.FONT_HERSHEY_SIMPLEX,0.5, 
                 (0, 255, 0), 
                 2
             )
